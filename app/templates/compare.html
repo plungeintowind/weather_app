@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>对比结果</h2>
+<table>
+    <tr><th>城市</th><th>AQI</th><th>主要污染物</th></tr>
+    {% for res in results %}
+    <tr>
+        <td>{{ res.city }}</td>
+        <td style="color: {{ res.color }}">{{ res.aqi }}</td>
+        <td>{{ res.pollutant }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if chart %}
+<h3>对比图表</h3>
+<img src="data:image/png;base64,{{ chart }}" alt="AQI对比图">
+{% endif %}
+{% endblock %}

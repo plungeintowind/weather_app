@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="/query">
+    <input type="text" name="city" placeholder="输入城市(如hefei)" value="hefei">
+    <button type="submit">查询</button>
+</form>
+
+<form action="/compare" method="POST">
+    <input type="text" name="cities" placeholder="输入城市,用逗号分隔" 
+           value="hefei,beijing,shanghai">
+    <button type="submit">对比</button>
+</form>
+
+<h3>最近查询：</h3>
+<ul>
+    {% for city in history %}
+    <li><a href="/query?city={{ city }}">{{ city }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
