@@ -1,20 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>对比结果</h2>
-<table>
-    <tr><th>城市</th><th>AQI</th><th>主要污染物</th></tr>
-    {% for res in results %}
-    <tr>
-        <td>{{ res.city }}</td>
-        <td style="color: {{ res.color }}">{{ res.aqi }}</td>
-        <td>{{ res.pollutant }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="container">
+    <h2 class="mb-4">多城市AQI对比</h2>
+    
+    <!-- 对比结果表格 -->
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>城市</th>
+                    <th>AQI</th>
+                    <th>主要污染物</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in results %}
+                <tr>
+                    <td>{{ res.city }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if res.aqi <= 50 %}bg-success
+                            {% elif res.aqi <= 100 %}bg-warning
+                            {% else %}bg-danger{% endif %}">
+                            {{ res.aqi }}
+                        </span>
+                    </td>
+                    <td>{{ res.pollutant }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-{% if chart %}
-<h3>对比图表</h3>
-<img src="data:image/png;base64,{{ chart }}" alt="AQI对比图">
-{% endif %}
+    <!-- 对比图表 -->
+    {% if chart %}
+    <div class="chart-container mb-4">
+        <h3>AQI对比图表</h3>
+        <img src="data:image/png;base64,{{ chart }}" 
+             alt="多城市AQI对比" 
+             class="img-fluid rounded">
+    </div>
+    {% endif %}
+
+    <!-- 新增返回按钮 -->
+    <div class="text-center">
+        <a href="/" class="btn btn-primary">
+            <i class="bi bi-house-door"></i> 返回首页
+        </a>
+    </div>
+</div>
 {% endblock %}

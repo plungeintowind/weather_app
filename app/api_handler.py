@@ -112,3 +112,35 @@ class AQIHandler:
         elif aqi <= 150: return 'orange'
         elif aqi <= 200: return 'red'
         else: return 'purple'
+
+    def generate_pollutant_chart(self, city_data):
+        plt.rcParams['font.sans-serif'] = ['SimHei'] 
+        plt.rcParams['axes.unicode_minus'] = False
+        
+        try:
+            # 模拟污染物成分数据（实际应根据API返回数据调整）
+            pollutants = {
+                'PM2.5': city_data.get('pm25', 30),
+                'PM10': city_data.get('pm10', 20),
+                'O3': city_data.get('o3', 15),
+                'NO2': city_data.get('no2', 10)
+            }
+            
+            plt.figure(figsize=(6, 6))
+            plt.pie(
+                pollutants.values(),
+                labels=pollutants.keys(),
+                autopct='%1.1f%%',
+                colors=['#ff9999','#66b3ff','#99ff99','#ffcc99']
+            )
+            plt.title(f"{city_data['city']} 污染物成分")
+            
+            # 转换为Base64
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png', bbox_inches='tight', dpi=100)
+            plt.close()
+            return base64.b64encode(buffer.getvalue()).decode('utf-8')
+            
+        except Exception as e:
+            print(f"污染物图表生成失败: {str(e)}")
+            return None
