@@ -1,42 +1,25 @@
-import requests
-import os
-from dotenv import load_dotenv
+from api_handler import AQIHandler
 
-# 加载环境变量
-load_dotenv()
-
-def test_api_connection():
-    """
-    测试aqicn.org API的连通性
-    """
-    API_KEY = os.getenv('API_KEY')
-    TEST_CITY = 'beijing'  # 测试城市
+def main():
+    print("=== 空气质量查询系统 ===")
+    api = AQIHandler()
     
-    if not API_KEY:
-        print("错误：未找到API_KEY，请在.env文件中设置")
-        return
-    
-    url = f"https://api.waqi.info/feed/{TEST_CITY}/?token={API_KEY}"
-    
-    try:
-        print(f"正在测试API连接，查询城市: {TEST_CITY}...")
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()  # 检查HTTP错误
-        
-        data = response.json()
-        
-        if data['status'] == 'ok':
-            print("API连接成功！")
-            print(f"城市: {data['data']['city']['name']}")
-            print(f"当前AQI: {data['data']['aqi']}")
-            print(f"主要污染物: {data['data']['dominentpol']}")
-        else:
-            print(f"API返回错误: {data.get('data', '未知错误')}")
+    while True:
+        city = input("\n请输入城市名称(英文或拼音，输入q退出): ").strip()
+        if city.lower() == 'q':
+            break
             
-    except requests.exceptions.RequestException as e:
-        print(f"请求出错: {e}")
-    except ValueError as e:
-        print(f"JSON解析错误: {e}")
+        try:
+            data = api.get_aqi_data(city)
+            print("\n✅ 查询成功！")
+            print(f"城市: {data['city']}")
+            print(f"AQI指数: {data['aqi']}")
+            print(f"主要污染物: {data['dominant_pollutant']}")
+            print(f"更新时间: {data['timestamp']}")
+            print(f"最近查询: {api.history}")
+            
+        except Exception as e:
+            print(f"\n❌ 错误: {str(e)}")
 
 if __name__ == "__main__":
-    test_api_connection()
+    main()
